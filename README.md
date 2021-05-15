@@ -7,5 +7,4 @@
 | Create new blog | /api/blog/new    |        |                 | post has new infomation            |
 | Update blog     | /api/blog/update |        | id              | postData has updated content       |
 | Delete blog     | /api/blog/del    |        | id              |                                    |
-| Log in          | /api/blog/login  |        |                 | postData has username and password |
-
+| Log in          | /api/user/login  |        |                 | postData has username and password |
