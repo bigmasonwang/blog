@@ -1,21 +1,16 @@
+const { exec } = require('../db/mysql');
+
 const getList = (author, keyword) => {
-  // TODO: return data
-  return [
-    {
-      id: 1,
-      title: 'title1',
-      content: 'content1',
-      createTime: 1621047648435,
-      author: 'Jhon Doe',
-    },
-    {
-      id: 2,
-      title: 'title2',
-      content: 'content2',
-      createTime: 1621047705214,
-      author: 'Jhon Doe',
-    },
-  ];
+  let sql = 'SELECT * from blogs where 1=1 ';
+  if (author) {
+    sql += `and author='${author}' `;
+  }
+  if (keyword) {
+    sql += `and title like '${keyword}' `;
+  }
+  sql += 'order by createtime desc;';
+
+  return exec(sql); // return promise
 };
 
 const getDetail = (id) => {

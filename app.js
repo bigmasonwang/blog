@@ -39,11 +39,19 @@ const serverHandle = (req, res) => {
     req.body = postData;
 
     // handle blog router
-    const blogData = handleBlogRouter(req, res);
-    if (blogData) {
-      res.end(JSON.stringify(blogData));
+    // const blogData = handleBlogRouter(req, res);
+    // if (blogData) {
+    //   res.end(JSON.stringify(blogData));
+    //   return;
+    // }
+    const blogResult = handleBlogRouter(req, res);
+    if (blogResult) {
+      blogResult.then((blogData) => {
+        res.end(JSON.stringify(blogData));
+      });
       return;
     }
+
     // handle user router
     const userData = handleUserRouter(req, res);
     if (userData) {
