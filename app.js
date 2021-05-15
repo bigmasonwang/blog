@@ -14,7 +14,7 @@ const getPostData = (req) => {
     }
     let postData = '';
     req.on('data', (chunk) => {
-      postData += chunk.toStirng();
+      postData += chunk.toString();
     });
     req.on('end', () => {
       if (!postData) {
