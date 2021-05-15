@@ -53,11 +53,19 @@ const serverHandle = (req, res) => {
     }
 
     // handle user router
-    const userData = handleUserRouter(req, res);
-    if (userData) {
-      res.end(JSON.stringify(userData));
+    // const userData = handleUserRouter(req, res);
+    // if (userData) {
+    //   res.end(JSON.stringify(userData));
+    //   return;
+    // }
+    const userResult = handleUserRouter(req, res);
+    if (userResult) {
+      userResult.then((blogData) => {
+        res.end(JSON.stringify(blogData));
+      });
       return;
     }
+
     // 404
     res.writeHead(404, { 'Content-type': 'text/plain' });
     res.write('404 Not Found\n');

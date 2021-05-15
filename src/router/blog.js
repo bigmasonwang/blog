@@ -23,31 +23,48 @@ const handleBlogRouter = (req, res) => {
   }
 
   if (method === 'GET' && req.path === '/api/blog/detail') {
-    const data = getDetail(id);
-    return new SuccessModel(data);
+    // const data = getDetail(id);
+    // return new SuccessModel(data);
+    const result = getDetail(id);
+    return result.then((detailData) => {
+      return new SuccessModel(detailData);
+    });
   }
 
   if (method === 'POST' && req.path === '/api/blog/new') {
-    const data = newBlog(req.body);
-    return new SuccessModel(data);
+    // const data = newBlog(req.body);
+    // return new SuccessModel(data);
+    const author = 'admin'; // TODO
+    req.body.author = author;
+
+    const result = newBlog(req.body);
+    return result.then((data) => {
+      return new SuccessModel(data);
+    });
   }
 
   if (method === 'POST' && req.path === '/api/blog/update') {
     const result = updateBlog(id, req.body);
-    if (result) {
-      return new SuccessModel();
-    } else {
-      return new ErrorModel('Update failed');
-    }
+    return result.then((value) => {
+      if (value) {
+        return new SuccessModel();
+      } else {
+        return new ErrorModel('Update failed');
+      }
+    });
   }
 
   if (method === 'POST' && req.path === '/api/blog/delete') {
-    const result = deleteBlog(id);
-    if (result) {
-      return new SuccessModel();
-    } else {
-      return new ErrorModel('Delete failed');
-    }
+    const author = 'admin';
+
+    const result = deleteBlog(id, author);
+    return result.then((value) => {
+      if (value) {
+        return new SuccessModel();
+      } else {
+        return new ErrorModel('Delete failed');
+      }
+    });
   }
 };
 
