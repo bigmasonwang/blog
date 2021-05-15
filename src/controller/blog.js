@@ -18,6 +18,17 @@ const getList = (author, keyword) => {
   ];
 };
 
+const getDetail = (id) => {
+  return {
+    id: 1,
+    title: 'title1',
+    content: 'content1',
+    createTime: 1621047648435,
+    author: 'Jhon Doe',
+  };
+};
+
 module.exports = {
   getList,
+  getDetail,
 };
