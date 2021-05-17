@@ -30,9 +30,26 @@ const getPostData = (req) => {
 const serverHandle = (req, res) => {
   res.setHeader('Content-type', 'application/json');
 
+  // Get Path
   const url = req.url;
   req.path = url.split('?')[0];
+
+  // Parse query
   req.query = querystring.parse(url.split('?')[1]);
+
+  // Parse cookie
+  req.cookie = {};
+  const cookieStr = req.headers.cookie || ''; // k1=v1; k2=v2;
+  cookieStr.split(';').forEach((item) => {
+    if (!item) {
+      return;
+    }
+    const arr = item.split('=');
+    const key = arr[0].trim();
+    const value = arr[1].trim();
+    req.cookie[key] = value;
+  });
+  console.log('req.cookie: ', req.cookie);
 
   // handle post data
   getPostData(req).then((postData) => {
