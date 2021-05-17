@@ -2,6 +2,16 @@ const querystring = require('querystring');
 const handleBlogRouter = require('./src/router/blog');
 const handleUserRouter = require('./src/router/user');
 
+// Get cookie expires
+const getCookieExpires = () => {
+  const d = new Date();
+  d.setTime(d.getTime() + 24 * 60 * 60 * 1000);
+  return d.toGMTString();
+};
+
+// session data
+const SESSION_DATA = {};
+
 const getPostData = (req) => {
   const promise = new Promise((resolve, reject) => {
     if (req.method !== 'POST') {
@@ -51,33 +61,49 @@ const serverHandle = (req, res) => {
   });
   console.log('req.cookie: ', req.cookie);
 
+  // Parse session
+  let needSetCookie = false;
+  var userId = req.cookie.userid;
+  if (userId) {
+    if (!SESSION_DATA[userId]) {
+      SESSION_DATA[userId] = {};
+    }
+  } else {
+    needSetCookie = true;
+    userId = `${Date.now()}_${Math.random()}`; // be uniqe
+    SESSION_DATA[userId] = {};
+  }
+  req.session = SESSION_DATA[userId];
+
   // handle post data
   getPostData(req).then((postData) => {
     req.body = postData;
 
     // handle blog router
-    // const blogData = handleBlogRouter(req, res);
-    // if (blogData) {
-    //   res.end(JSON.stringify(blogData));
-    //   return;
-    // }
     const blogResult = handleBlogRouter(req, res);
     if (blogResult) {
       blogResult.then((blogData) => {
+        if (needSetCookie) {
+          res.setHeader(
+            'set-Cookie',
+            `userid=${userId}; path=/; httpOnly; expires=${getCookieExpires()}`
+          );
+        }
         res.end(JSON.stringify(blogData));
       });
       return;
     }
 
     // handle user router
-    // const userData = handleUserRouter(req, res);
-    // if (userData) {
-    //   res.end(JSON.stringify(userData));
-    //   return;
-    // }
     const userResult = handleUserRouter(req, res);
     if (userResult) {
       userResult.then((blogData) => {
+        if (needSetCookie) {
+          res.setHeader(
+            'set-Cookie',
+            `userid=${userId}; path=/; httpOnly; expires=${getCookieExpires()}`
+          );
+        }
         res.end(JSON.stringify(blogData));
       });
       return;
